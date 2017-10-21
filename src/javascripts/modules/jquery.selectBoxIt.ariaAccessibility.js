@@ -18,9 +18,6 @@
             // W3C `combobox` description: A presentation of a select; usually similar to a textbox where users can type ahead to select an option.
             "role": "combobox",
 
-            //W3C `aria-autocomplete` description: Indicates whether user input completion suggestions are provided.
-            "aria-autocomplete": "list",
-
             "aria-haspopup": "true",
 
             // W3C `aria-expanded` description: Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.
@@ -30,6 +27,13 @@
             "aria-owns": self.list[0].id
 
         });
+
+	try{
+		//W3C `aria-autocomplete` description: Indicates whether user input completion suggestions are provided.
+		self.dropdownContainer.attr({"aria-autocomplete", "list"});
+	}}catch(e){
+		// IE 11 in compatibility mode does not like it 		
+	}
 
         self.dropdownText.attr({
 
