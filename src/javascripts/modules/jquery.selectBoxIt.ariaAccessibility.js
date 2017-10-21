@@ -30,9 +30,9 @@
 
 	try{
 		//W3C `aria-autocomplete` description: Indicates whether user input completion suggestions are provided.
-		self.dropdownContainer.attr({"aria-autocomplete", "list"});
-	}}catch(e){
-		// IE 11 in compatibility mode does not like it 		
+		self.dropdownContainer.attr({"aria-autocomplete": "list"});
+	}catch(e){
+                // IE 11 in compatibility mode does not like it
 	}
 
         self.dropdownText.attr({
