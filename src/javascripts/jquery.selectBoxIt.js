@@ -566,7 +566,7 @@
                 currentOption.attr("value", this.value);
 
                 // Uses string concatenation for speed (applies HTML attribute encoding)
-                currentItem += optgroupElement + '<li data-id="' + index + '" data-val="' + self.htmlEscape(this.value) + '" data-disabled="' + dataDisabled + '" class="' + optgroupClass + " selectboxit-option " + ($(this).attr("class") || "") + '"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon ' + iconClass + ' ' + (iconUrlClass || self.theme["container"]) + '"' + iconUrlStyle + '></i></span>' + (self.options["html"] ? currentText : self.htmlEscape(currentText)) + '</a></li>';
+                currentItem += optgroupElement + '<li data-id="' + index + '" data-val="' + self.htmlEscape(this.value) + '" data-disabled="' + dataDisabled + '" class="' + optgroupClass + " selectboxit-option " + ($(this).attr("class") || "") + '"><a class="selectboxit-option-anchor"><span class="selectboxit-option-icon-container"><i class="selectboxit-option-icon ' + iconClass + ' ' + (iconUrlClass || self.theme["container"]) + '"' + iconUrlStyle + '></i></span>' + (self.options["html"] ? currentText: self.htmlEscape(currentText)) + '</a></li>';
 
                 currentDataSearch = currentOption.attr("data-search");
 
@@ -1265,30 +1265,30 @@
                 "keypress.selectBoxIt": function(e) {
                     // The `keypress` handler logic will only be applied if the dropdown list is enabled
                     if (!self.originalElem.disabled) {
-                    	
-	                    // Sets the current key to the `keyCode` value if `charCode` does not exist.  Used for cross
-	                    // browser support since IE uses `keyCode` instead of `charCode`.
-	                    var currentKey = e.charCode || e.keyCode,
+                        
+                        // Sets the current key to the `keyCode` value if `charCode` does not exist.  Used for cross
+                        // browser support since IE uses `keyCode` instead of `charCode`.
+                        var currentKey = e.charCode || e.keyCode,
 
-	                        key = self._keyMappings[e.charCode || e.keyCode],
+                            key = self._keyMappings[e.charCode || e.keyCode],
 
-	                        // Converts unicode values to characters
-	                        alphaNumericKey = String.fromCharCode(currentKey);
+                            // Converts unicode values to characters
+                            alphaNumericKey = String.fromCharCode(currentKey);
 
-	                    // If the plugin options allow text searches
-	                    if (self.search && (!key || (key && key === "space"))) {
+                        // If the plugin options allow text searches
+                        if (self.search && (!key || (key && key === "space"))) {
 
-	                        // Calls `search` and passes the character value of the user's text search
-	                        self.search(alphaNumericKey, true, true);
+                            // Calls `search` and passes the character value of the user's text search
+                            self.search(alphaNumericKey, true, true);
 
-	                    }
+                        }
 
-	                    if(key === "space") {
+                        if(key === "space") {
 
-	                        e.preventDefault();
+                            e.preventDefault();
 
-	                    }
-                	}
+                        }
+                    }
 
                 },
 
@@ -1536,7 +1536,7 @@
                 // `open` event with the `selectBoxIt` namespace
                 "open.selectBoxIt": function() {
 
-                    var currentElem = self.list.find("li[data-val='" + self.dropdownText.attr("data-val") + "']"),
+                    var currentElem = self.list.find("li[data-val='" + self.htmlEscape(self.dropdownText.attr("data-val")) + "']"),
                         activeElem;
 
                     // If no current element can be found, then select the first drop down option
@@ -2018,9 +2018,6 @@
             // W3C `combobox` description: A presentation of a select; usually similar to a textbox where users can type ahead to select an option.
             "role": "combobox",
 
-            //W3C `aria-autocomplete` description: Indicates whether user input completion suggestions are provided.
-            "aria-autocomplete": "list",
-
             "aria-haspopup": "true",
 
             // W3C `aria-expanded` description: Indicates whether the element, or another grouping element it controls, is currently expanded or collapsed.
@@ -2030,6 +2027,13 @@
             "aria-owns": self.list[0].id
 
         });
+
+	try{
+		//W3C `aria-autocomplete` description: Indicates whether user input completion suggestions are provided.
+		self.dropdownContainer.attr({"aria-autocomplete": "list"});
+	}catch(e){
+                // IE 11 in compatibility mode does not like it
+	}
 
         self.dropdownText.attr({
 
@@ -2115,6 +2119,7 @@
         return self;
 
     };
+
 
     // Copy Attributes Module
     // ======================
@@ -3048,6 +3053,13 @@ selectBoxIt._destroySelectBoxIt = function() {
 
                 // Moves SelectBoxIt off the page
                 self.selectBox.addClass('selectboxit-rendering');
+
+            },
+
+            "destroy.selectBoxIt": function() {
+
+                // Reset SelectBoxIt class
+                self.selectBox.removeClass('selectboxit-rendering');
 
             }
 
